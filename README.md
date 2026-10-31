@@ -55,9 +55,15 @@ I've created this repo to track my self-hosted / homelab journey.
 
 ### 🔴 Phase 1 — Infrastructure Platform (Base System)
 
-- **Virtualisation Platform** — Proxmox — Host for VMs and containers (core infrastructure layer)  
+- **Virtualisation Platform** — Proxmox — Host for VMs and containers (core infrastructure layer), running as a two-node cluster on the mini PCs  
+- **Cluster Quorum** — Corosync QDevice on the Raspberry Pi — Third quorum vote, so one node can be down without the cluster locking its config  
+- **IP Reservations** — TP-Link Archer AX55 Pro — DHCP reservations for the NAS, both Proxmox nodes and the Raspberry Pi  
+- **Lab Switching** — VLAN-capable managed switch (or a direct link between nodes) — Lets lab VMs on either node reach the OPNsense LAN  
+- **Lab Router & Firewall** — OPNsense (VM) — Routes and segments the lab; WAN and LAN bridges exist on both nodes so it can migrate  
 - **DNS & Network Control** — Pi-hole / AdGuard Home / Technitium DNS — Network-wide DNS filtering and control  
 - **Remote Access VPN** — WireGuard / Tailscale — Secure remote access to homelab  
+
+**Network layout:** lab VMs and containers sit behind OPNsense, split into VLANs. Proxmox management, cluster traffic and the NAS stay on the house network, so an OPNsense outage can't lock me out of the hypervisor. A dedicated management VLAN (with a backup way in) can come later once things are stable.
 
 ### 🟠 Phase 2 — Dashboards & Entry Points
 
@@ -66,8 +72,9 @@ I've created this repo to track my self-hosted / homelab journey.
 - **Dashboard** — Homepage — Central service overview  
 - **Monitoring & Uptime** — Uptime Kuma — Service availability tracking  
 
-### 🟡 Phase 3 — Storage & Personal Data Layer
+### 🟡 Phase 3 — Backups, Storage & Personal Data Layer
 
+- **Backup System** — Duplicati / Restic / Kopia — Encrypted 3-2-1 backups, set up and restore-tested before any real data goes in  
 - **Photo Storage** — Immich — Self-hosted photo backup and management  
 - **Document Management** — Paperless-ngx — OCR document storage system  
 - **File Management** — Filebrowser — Web-based file access for NAS storage  
@@ -80,11 +87,10 @@ I've created this repo to track my self-hosted / homelab journey.
 - **Music Client** — Feishin — Web player for Navidrome  
 - **Audiobook Server** — Audiobookshelf — Audiobook and podcast management  
 
-### 🔵 Phase 5 — Backup & System Management
+### 🔵 Phase 5 — Updates & System Management
 
-- **Backup System** — Duplicati / Restic / Kopia — Data backup and recovery  
-- **Container Updates** — Watchtower — Automatic Docker updates  
-- **Docker Management** — Dockage / Portainer — Container management UI  
+- **Container Update Alerts** — Watchtower (notify-only) / Diun — Flags new images; Immich updated by hand after reading release notes  
+- **Docker Management** — Dockge / Portainer — Container management UI  
 - **Workflow Automation** — Node-RED — System automation and integrations  
 
 ### ⚪ Phase 6 — Observability & Metrics
